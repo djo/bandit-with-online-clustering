@@ -5,25 +5,25 @@ from src.policies.policy import Policy
 
 
 class UniformRandom(Policy):
-    def __init__(self, num_actions: int, rng: Generator):
+    def __init__(self, num_actions: int, horizon: int, rng: Generator):
         """
         Create a policy choosing an action uniformly at random.
         """
         self.num_actions = num_actions
+        self.horizon = horizon
         self._rng = rng
-        self._current_action = -1
-        self.cumulative_rewards = np.zeros(num_actions, dtype=np.float32)
-        self.action_stats = np.zeros(num_actions, dtype=np.int32)
+        self.rewards = np.zeros(horizon, dtype=np.float32)
+        self.selected_actions = np.full(horizon, fill_value=-1, dtype=np.int32)
 
     def select(self, t: int) -> int:
-        self._current_action = self._rng.choice(self.num_actions)
-        return self._current_action
+        self.selected_actions[t] = self._rng.choice(self.num_actions)
+        return self.selected_actions[t]
 
     def update(self, t: int, action: int, reward: float, phi: float):
-        if action != self._current_action:
+        if action != self.selected_actions[t]:
             raise ValueError(
-                f"Expected the reward for action {self._current_action}, but got for {action}"
+                f"Expected the reward for action {self.selected_actions[t]}, but got for {action}"
             )
-        self.cumulative_rewards[action] += reward
-        self.action_stats[action] += 1
+        self.selected_actions[t] = action
+        self.rewards[t] = reward
         return

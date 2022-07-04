@@ -5,14 +5,19 @@ import numpy as np
 
 class Policy(Protocol):
     num_actions: int
-    cumulative_rewards: np.ndarray
-    action_stats: np.ndarray
+    # in the instance per context setting it represents a global horizon,
+    # and it's larger (or equal) than the true policy's horizon
+    horizon: int
+    # received reward on step t
+    rewards: np.ndarray
+    # an action index on step t
+    selected_actions: np.ndarray
 
     def select(self, t: int) -> int:
         """
         Select next action to play on the given round.
 
-        :param t: current round [0, T), where T is the horizon
+        :param t: current step [0, T), where T is the horizon
         :return: an action index to play [0, N), where N is the number of actions
         """
         ...

@@ -7,20 +7,26 @@ from src.policies.discounted_beta_thompson_sampling import DiscountedBetaThompso
 
 class TestDiscountedTestBetaThompsonSampling:
     def test_select_action_to_explore(self):
-        ts = DiscountedBetaThompsonSampling(num_actions=2, gamma=1.0, rng=Generator(PCG64(40)))
+        ts = DiscountedBetaThompsonSampling(
+            num_actions=2, horizon=1, gamma=1.0, rng=Generator(PCG64(40))
+        )
         assert ts.select(t=0) == 0
 
     def test_update(self):
-        ts = DiscountedBetaThompsonSampling(num_actions=2, gamma=1.0, rng=Generator(PCG64(42)))
+        ts = DiscountedBetaThompsonSampling(
+            num_actions=2, horizon=1, gamma=1.0, rng=Generator(PCG64(42))
+        )
         assert ts.select(t=0) == 1
         with pytest.raises(ValueError, match=r"Expected the reward for action 1, but got for 0"):
             ts.update(t=0, action=0, reward=0.0, phi=1.0)
         ts.update(t=0, action=1, reward=0.0, phi=1.0)
-        assert_array_equal(ts.cumulative_rewards, [0.0, 0.0])
-        assert_array_equal(ts.action_stats, [0, 1])
+        assert_array_equal(ts.rewards, [0.0])
+        assert_array_equal(ts.selected_actions, [1])
 
     def test_no_discounting(self):
-        ts = DiscountedBetaThompsonSampling(num_actions=2, gamma=1.0, rng=Generator(PCG64(52)))
+        ts = DiscountedBetaThompsonSampling(
+            num_actions=2, horizon=4, gamma=1.0, rng=Generator(PCG64(52))
+        )
 
         assert ts.select(t=0) == 0
         ts.update(t=0, action=0, reward=1.0, phi=1.0)
@@ -36,7 +42,9 @@ class TestDiscountedTestBetaThompsonSampling:
         assert_array_equal(ts.betas, [0.0, 1.0])
 
     def test_with_gamma_discounting(self):
-        ts = DiscountedBetaThompsonSampling(num_actions=2, gamma=0.5, rng=Generator(PCG64(52)))
+        ts = DiscountedBetaThompsonSampling(
+            num_actions=2, horizon=3, gamma=0.5, rng=Generator(PCG64(52))
+        )
 
         assert ts.select(t=0) == 0
         ts.update(t=0, action=0, reward=1.0, phi=1.0)
@@ -54,7 +62,9 @@ class TestDiscountedTestBetaThompsonSampling:
         )
 
     def test_with_gamma_phi_discounting(self):
-        ts = DiscountedBetaThompsonSampling(num_actions=2, gamma=0.5, rng=Generator(PCG64(52)))
+        ts = DiscountedBetaThompsonSampling(
+            num_actions=2, horizon=3, gamma=0.5, rng=Generator(PCG64(52))
+        )
 
         assert ts.select(t=0) == 0
         ts.update(t=0, action=0, reward=1.0, phi=0.9)
@@ -72,5 +82,5 @@ class TestDiscountedTestBetaThompsonSampling:
             ts.betas, [(0.0 * 0.5 + 0.0) * 0.5 * 0.5, (0.0 * 0.5 * 0.5 + 0.0) * 0.5 + 0.7 * 1.0]
         )
 
-        assert_array_equal(ts.cumulative_rewards, [1.0, 1.0])
-        assert_array_equal(ts.action_stats, [1, 2])
+        assert_array_equal(ts.rewards, [1.0, 1.0, 0.0])
+        assert_array_equal(ts.selected_actions, [0, 1, 1])
