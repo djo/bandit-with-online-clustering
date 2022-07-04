@@ -10,8 +10,6 @@ class NonStationaryStochasticEnvironment(Protocol):
     largest_means: np.ndarray
     # an action with the largest mean on each step t
     optimal_actions: np.ndarray
-    # suboptimality on each step t
-    suboptimality: np.ndarray
 
     def draw(self, t: int, action: int) -> float:
         """

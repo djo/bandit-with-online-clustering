@@ -13,6 +13,7 @@ class SequentialKMeans:
     def fit(self, x) -> int:
         """
         Fit a new data point x
+
         :param x: data point
         :return: cluster the data point assigned to
         """
