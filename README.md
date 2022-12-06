@@ -4,10 +4,18 @@
 
 The framework for numerical experiments to simulate the contextual multi-armed bandit problem
 in the environment with online clustering.
+Part of the paper [Multi-armed bandit problem with online clustering as side information](https://wiki.helsinki.fi/download/attachments/406850783/dzhoha-abstract.pdf).
 
-TODO: problem statement, models, experiments description
+Structure of the project and currently implemented algorithms:
 
-_Adapted policies and experiments will come soon, for now find the non-adapted policies in [https://github.com/djo/delayed-bandit](https://github.com/djo/delayed-bandit)._
+||Files|
+|-|-|
+|Environments|[Protocol](src/environments/non_stationary_stochastic_environment.py)|
+||[Bernoulli MAB](src/environments/bernoulli_bandit.py)|
+|Policies|[Protocol](src/policies/policy.py)|
+||[Uniform Random](src/policies/uniform_random.py)|
+||[Discounted Thompson Sampling (Beta distribution)](src/policies/discounted_beta_thompson_sampling.py)|
+|Tests|[Test module](src/test/)|
 
 ### Development
 
