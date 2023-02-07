@@ -16,6 +16,7 @@ Structure of the project and currently implemented algorithms:
 ||[Uniform Random](src/policies/uniform_random.py)|
 ||[Discounted Thompson Sampling (Beta distribution)](src/policies/discounted_beta_thompson_sampling.py)|
 |Tests|[Test module](src/test/)|
+|Notebooks|[Experiments](notebooks/)|
 
 ### Development
 
